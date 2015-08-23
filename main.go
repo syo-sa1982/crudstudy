@@ -7,11 +7,13 @@ import (
 	"github.com/zenazn/goji/web"
 	"github.com/zenazn/goji/web/middleware"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 )
 
 var db gorm.DB
 
 func main() {
+	log.Print("main")
 	user := web.New()
 	goji.Handle("/user/*", user)
 

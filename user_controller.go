@@ -10,6 +10,7 @@ import (
 	"github.com/wcl48/valval"
 	"fmt"
 	"strconv"
+	"log"
 )
 
 var tpl *template.Template
@@ -20,9 +21,10 @@ type FormData struct{
 	Mess string
 }
 
-func UserIndex(c web.C, w http.ResponseWriter, r *http.Request) {
+func UserIndex(c web.C, w http.ResponseWriter, r *http.Request){
 	Users := [] models.User{}
 	db.Find(&Users)
+	log.Print("index")
 	tpl = template.Must(template.ParseFiles("view/user/index.html"))
 	tpl.Execute(w, Users)
 }
@@ -49,10 +51,12 @@ func UserCreate(c web.C, w http.ResponseWriter, r *http.Request){
 }
 
 func UserEdit(c web.C, w http.ResponseWriter, r *http.Request){
+	log.Print("UserEdit")
 	User := models.User{}
 	User.Id, _ = strconv.ParseInt(c.URLParams["id"], 10, 64)
 	db.Find(&User)
 	tpl = template.Must(template.ParseFiles("view/user/edit.html"))
+	tpl.Execute(w,FormData{User, ""})
 }
 
 func UserUpdate(c web.C, w http.ResponseWriter, r *http.Request){
@@ -95,6 +99,7 @@ func SuperSecure(c *web.C, h http.Handler) http.Handler {
 			return
 		}
 
+		h.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(fn)
 }
